@@ -1,17 +1,18 @@
+# Stage 1 — build
 FROM node:20-alpine AS build
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install           # Install all dependencies, including devDependencies
 
 COPY . .
 
-RUN chmod +x node_modules/.bin/vite
+RUN npm run build         # Build the project
 
-RUN npm run build
-
+# Stage 2 — serve
 FROM node:20-alpine AS prod
+
 WORKDIR /app
 
 COPY --from=build /app/dist ./dist
