@@ -1,17 +1,16 @@
-# ---- Build stage ----
 FROM node:20-alpine AS build
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-RUN chmod +x node_modules/.bin/vite
-
 COPY . .
+
+RUN chmod +x node_modules/.bin/vite
 
 RUN npm run build
 
-# ---- Production stage ----
 FROM node:20-alpine AS prod
 WORKDIR /app
 
