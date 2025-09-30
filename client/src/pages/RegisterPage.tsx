@@ -15,10 +15,16 @@ export default function RegisterPage() {
   const { setThemeByEmailAndSchool } = useTheme()
   const navigate = useNavigate()
 
+  // Backend URL depending on environment
+  const backendUrl =
+    import.meta.env.MODE === "production"
+      ? "http://unimarket-server:5000"
+      : "http://localhost:5000"
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch(`${backendUrl}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: email, password, university }),
@@ -26,7 +32,10 @@ export default function RegisterPage() {
       if (!res.ok) throw new Error("Registration failed")
       const data = await res.json()
       localStorage.setItem("token", data.token)
-      localStorage.setItem("userData", JSON.stringify({ username: email, university }))
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({ username: email, university })
+      )
       setThemeByEmailAndSchool(email, university)
       navigate("/") // redirect to main page
     } catch (err: any) {

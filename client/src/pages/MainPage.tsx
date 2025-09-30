@@ -6,8 +6,14 @@ import { useTheme } from "../context/ThemeContext"
 export default function MainPage() {
   const navigate = useNavigate()
   const { logout } = useTheme()
+
   const userData = localStorage.getItem("userData")
   const user = userData ? JSON.parse(userData) : null
+
+  const backendUrl =
+    import.meta.env.MODE === "production"
+      ? "http://unimarket-server:5000"
+      : "http://localhost:5000"
 
   return (
     <div className="min-h-screen bg-bg flex flex-col">
@@ -17,7 +23,14 @@ export default function MainPage() {
         {user ? (
           <div className="flex items-center gap-2">
             <p className="text-sm">{user.username}</p>
-            <Button variant="outline" size="sm" onClick={() => { logout(); navigate("/") }}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                logout()
+                navigate("/")
+              }}
+            >
               Logout
             </Button>
           </div>
@@ -37,7 +50,10 @@ export default function MainPage() {
                 <CardTitle className="text-center text-lg">Get Started</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                <Button onClick={() => navigate("/login")} className="w-full bg-primary text-accent">
+                <Button
+                  onClick={() => navigate("/login")}
+                  className="w-full bg-primary text-accent"
+                >
                   Login
                 </Button>
                 <Button

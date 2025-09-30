@@ -13,10 +13,16 @@ export default function LoginPage() {
   const { setThemeByEmailAndSchool } = useTheme()
   const navigate = useNavigate()
 
+  // Backend URL depending on environment
+  const backendUrl =
+    import.meta.env.MODE === "production"
+      ? "http://unimarket-server:5000"
+      : "http://localhost:5000"
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch(`${backendUrl}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: email, password }),
@@ -24,7 +30,10 @@ export default function LoginPage() {
       if (!res.ok) throw new Error("Invalid credentials")
       const data = await res.json()
       localStorage.setItem("token", data.token)
-      localStorage.setItem("userData", JSON.stringify({ username: email, university: data.university }))
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({ username: email, university: data.university })
+      )
       setThemeByEmailAndSchool(email, data.university)
       navigate("/") // redirect to main page
     } catch (err: any) {

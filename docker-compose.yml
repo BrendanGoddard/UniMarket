@@ -4,6 +4,8 @@ services:
     build: ./server
     ports:
       - "5000:5000"
+    networks:
+      - unimarket-net
 
   unimarket-client:
     build: ./client
@@ -13,3 +15,9 @@ services:
       - unimarket-server
     environment:
       - NODE_ENV=production
+    networks:
+      - unimarket-net
+
+networks:
+  unimarket-net:
+    driver: bridge
