@@ -13,7 +13,7 @@ export default function MainPage() {
     <div className="min-h-screen bg-bg flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 bg-primary text-accent">
-        <h1 className="text-2xl font-bold">UniMarket</h1>
+        <h1 className="text-2xl font-bold">UniMarket By MMEBJ</h1>
         {user ? (
           <div className="flex items-center gap-2">
             <p className="text-sm">{user.username}</p>
