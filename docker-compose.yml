@@ -4,19 +4,17 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile.server
-    container_name: express_server
-    restart: always
+      dockerfile: server/Dockerfile
     ports:
       - "5000:5000"
+    restart: always
 
   client:
     build:
       context: .
-      dockerfile: Dockerfile.client
-    container_name: vite_client
-    restart: always
+      dockerfile: client/Dockerfile
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
       - server
+    restart: always
