@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: express_server
+    restart: always
+    ports:
+      - "5000:5000"
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: vite_client
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
