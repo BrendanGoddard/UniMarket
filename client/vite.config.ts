@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 const target =
   process.env.NODE_ENV === "production"
-    ? "http://server:5000"   // Docker service name
+    ? "http://unimarket-server:5000" // correct service name
     : "http://localhost:5000"; // Local dev server
 
 export default defineConfig({
