@@ -1,14 +1,13 @@
 import * as path from "path";
-import { fileURLToPath } from "url";
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
-// Fix for __dirname in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const target =
+  process.env.NODE_ENV === "production"
+    ? "http://server:5000"   // Docker service name
+    : "http://localhost:5000"; // Local dev server
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -19,8 +18,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000", // your backend port
+        target,
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
       },
     },
   },
