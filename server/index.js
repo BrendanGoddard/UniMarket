@@ -4,18 +4,32 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+// === Serve frontend build in production ===
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// In production, serve the built client files
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+}
+
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 
+// === MongoDB Connection ===
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
 
+// === User Schema ===
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -39,6 +53,7 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
+// === API Routes ===
 app.post("/api/register", async (req, res) => {
   try {
     const { username, password, university } = req.body;
@@ -75,6 +90,11 @@ app.post("/api/login", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// === Catch-all route to serve index.html for SPA ===
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
 app.listen(process.env.PORT, () =>
